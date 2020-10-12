@@ -150,7 +150,7 @@ namespace Aseprite
                         parent = GetParentLayer(parent);
                     }
 
-                    if (visibility == false || layer.LayerType == LayerType.Group)
+                    if (layer.LayerType == LayerType.Group)
                         continue;
 
                     textures.Add(GetTextureFromCel(cels[i]));

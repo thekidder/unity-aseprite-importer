@@ -95,7 +95,7 @@ namespace AsepriteImporter
                     secondaryTexture.alphaIsTransparency = textureSettings.transparencyMode == TransparencyMode.Alpha;;
                     secondaryTexture.wrapMode = textureSettings.wrapMode;
                     secondaryTexture.filterMode = textureSettings.filterMode;
-                    secondaryTexture.name = "SecondaryTexture_" + textureName;
+                    secondaryTexture.name = textureName;
                     
                     secondarySpriteTextures.Add(new SecondarySpriteTexture() {name = textureName, texture = secondaryTexture});
                 }
@@ -111,15 +111,18 @@ namespace AsepriteImporter
             {
                 width = atlas.width,
                 height = atlas.height,
-                containsAlpha = true
+                containsAlpha = true,
             };
 
             generationSettings.textureImporterSettings = new TextureImporterSettings
             {
-                textureType = TextureImporterType.Default,
+                textureType = TextureImporterType.Sprite,
                 textureShape = TextureImporterShape.Texture2D,
                 alphaIsTransparency = textureSettings.transparencyMode == TransparencyMode.Alpha,
                 alphaSource = TextureImporterAlphaSource.FromInput,
+                spritePixelsPerUnit = textureSettings.pixelsPerUnit,
+                spritePivot = textureSettings.spritePivot,
+                spriteMeshType = SpriteMeshType.Tight,
                 convertToNormalMap = false,
                 mipmapEnabled = false,
                 sRGBTexture = true,
@@ -130,19 +133,21 @@ namespace AsepriteImporter
                 wrapModeV = TextureWrapMode.Clamp,
                 wrapModeW = TextureWrapMode.Clamp
             };
-            
-            
-
 
             var imageBuffer = atlas.GetRawTextureData<Color32>();
             var generatedOutput = TextureGenerator.GenerateTexture(generationSettings, imageBuffer);
             generatedOutput.texture.name = "Texture";
 
             // Main texture atlas
-            ctx.AddObjectToAsset("Atlas_Preprocessing", atlas);
             ctx.AddObjectToAsset("Texture", generatedOutput.texture);
-            ctx.SetMainObject(atlas);
+            ctx.SetMainObject(generatedOutput.texture);
             
+            // Add secondary textures
+            foreach (var secondarySpriteTexture in secondarySpriteTextures)
+            {
+                ctx.AddObjectToAsset("SecondaryTex_" + secondarySpriteTexture.name, secondarySpriteTexture.texture);
+            }
+
             // Add sprites
             foreach (var sprite in generatedOutput.sprites)
             {
@@ -152,7 +157,7 @@ namespace AsepriteImporter
             // Add animations
             if (importType == AseFileImportType.Sprite)
             {
-                // GenerateAnimations(ctx, aseFile, generatedOutput.sprites, metadatas);
+                GenerateAnimations(ctx, aseFile, generatedOutput.sprites, metadatas);
             }
 
             switch (importType)
