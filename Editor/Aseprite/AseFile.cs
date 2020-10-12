@@ -306,32 +306,38 @@ namespace Aseprite
                         metadatas[layerIndex] = new MetaData(layer.LayerName);
                     var metadata = metadatas[layerIndex];
 
-                    CelChunk cel = cels[i];
-                    Vector2 center = Vector2.zero;
-                    int pixelCount = 0;
-
-                    for (int y = 0; y < cel.Height; ++y)
+                    // Process transform metadata
+                    if (metadata.Type == MetaDataType.TRANSFORM)
                     {
-                        for (int x = 0; x < cel.Width; ++x)
+                        CelChunk cel = cels[i];
+                        Vector2 center = Vector2.zero;
+                        int pixelCount = 0;
+
+                        for (int y = 0; y < cel.Height; ++y)
                         {
-                            int texX = cel.X + x;
-                            int texY = -(cel.Y + y) + Header.Height - 1;
-                            var col = cel.RawPixelData[x + y * cel.Width];
-                            if (col.GetColor().a > 0.1f)
+                            for (int x = 0; x < cel.Width; ++x)
                             {
-                                center += new Vector2(texX, texY);
-                                pixelCount++;
+                                int texX = cel.X + x;
+                                int texY = -(cel.Y + y) + Header.Height - 1;
+                                var col = cel.RawPixelData[x + y * cel.Width];
+                                if (col.GetColor().a > 0.1f)
+                                {
+                                    center += new Vector2(texX, texY);
+                                    pixelCount++;
+                                }
                             }
                         }
-                    }
 
-                    if (pixelCount > 0)
-                    {
-                        center /= pixelCount;
-                        var pivot = Vector2.Scale(spritePivot, new Vector2(Header.Width, Header.Height));
-                        var posWorld = (center - pivot) / pixelsPerUnit + Vector2.one * 0.5f / pixelsPerUnit; //center pos in middle of pixels
+                        if (pixelCount > 0)
+                        {
+                            center /= pixelCount;
+                            var pivot = Vector2.Scale(spritePivot, new Vector2(Header.Width, Header.Height));
+                            var posWorld =
+                                (center - pivot) / pixelsPerUnit +
+                                Vector2.one * 0.5f / pixelsPerUnit; //center pos in middle of pixels
 
-                        metadata.Transforms.Add(index, posWorld);
+                            metadata.Transforms.Add(index, posWorld);
+                        }
                     }
                 }
             }
