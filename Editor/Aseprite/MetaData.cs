@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Aseprite
 {
-    public enum MetaDataType { UNKNOWN, TRANSFORM };
+    public enum MetaDataType { UNKNOWN, TRANSFORM, SECONDARY_TEXTURE };
 
     public class MetaData
     {
@@ -17,17 +18,45 @@ namespace Aseprite
 
         public MetaData(string layerName)
         {
+            Args = new List<string>();
+            Transforms = new Dictionary<int, Vector2>();
+            
+            // Check if it's a transform layer
             var regex = new Regex("@transform\\(\"(.*)\"\\)");
             var match = regex.Match(layerName);
             if (match.Success)
             {
                 Type = MetaDataType.TRANSFORM;
-                Args = new List<string>();
                 Args.Add(match.Groups[1].Value);
-                Transforms = new Dictionary<int, Vector2>();
+                return;
             }
-            else
-                Debug.LogWarning($"Unsupported aseprite metadata {layerName}");
+            
+            // Check if secondary texture layer
+            regex = new Regex("@secondary\\(\"(.*)\"\\)");
+            match = regex.Match(layerName);
+            if (match.Success)
+            {
+                Type = MetaDataType.SECONDARY_TEXTURE;
+                Args.Add(match.Groups[1].Value);
+                return;
+            }
+            
+            // Check if it's a shortcut for some common secondary textures
+            if (layerName.Equals("@emission", StringComparison.OrdinalIgnoreCase))
+            {
+                Type = MetaDataType.SECONDARY_TEXTURE;
+                Args.Add("_Emission");
+                return;
+            }
+            if (layerName.Equals("@normal", StringComparison.OrdinalIgnoreCase))
+            {
+                Type = MetaDataType.SECONDARY_TEXTURE;
+                Args.Add("_NormalMap");
+                return;
+            }
+            
+            // Unknown metadata layer
+            Debug.LogWarning($"Unsupported aseprite metadata {layerName}");
         }
     }
 }
