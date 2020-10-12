@@ -150,7 +150,8 @@ namespace AsepriteImporter
                         rect = spriteRect,
                         pivot = textureSettings.spritePivot,
                         border = Vector4.zero,
-                        name = index.ToString()
+                        name = index.ToString(),
+                        spriteID = index.ToString()
                     };
 
                     spriteImportData.Add(importData);
