@@ -52,7 +52,7 @@ namespace AsepriteImporter
 
             Texture2D[] frames = null;
             if (importType != AseFileImportType.LayerToSprite)
-                frames = aseFile.GetFrames();
+                frames = aseFile.GetFrames(textureSettings.ignoreBackground);
             else
                 frames = aseFile.GetLayersAsFrames();
 

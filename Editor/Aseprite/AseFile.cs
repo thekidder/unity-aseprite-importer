@@ -68,13 +68,13 @@ namespace Aseprite
             return (T)chunkCache[typeof(T)];
         }
 
-        public Texture2D[] GetFrames()
+        public Texture2D[] GetFrames(bool ignoreBackground)
         {
             List<Texture2D> frames = new List<Texture2D>();
 
             for (int i = 0; i < Frames.Count; i++)
             {
-                frames.Add(GetFrame(i));
+                frames.Add(GetFrame(i, ignoreBackground));
             }
 
             return frames.ToArray();
@@ -160,7 +160,7 @@ namespace Aseprite
             return textures;
         }
 
-        public Texture2D GetFrame(int index)
+        public Texture2D GetFrame(int index, bool ignoreBackground)
         {
             Frame frame = Frames[index];
 
@@ -175,7 +175,7 @@ namespace Aseprite
             for (int i = 0; i < cels.Count; i++)
             {
                 LayerChunk layer = layers[cels[i].LayerIndex];
-                if (layer.LayerName.StartsWith("@")) //ignore metadata layer
+                if (layer.LayerName.StartsWith("@") || (ignoreBackground && layer.IsBackground)) //ignore metadata layer
                     continue;
 
                 LayerBlendMode blendMode = layer.BlendMode;
@@ -344,9 +344,9 @@ namespace Aseprite
             return metadatas.Values.ToArray();
         }
 
-        public Texture2D GetTextureAtlas()
+        public Texture2D GetTextureAtlas(bool ignoreBackground)
         {
-            Texture2D[] frames = this.GetFrames();
+            Texture2D[] frames = this.GetFrames(ignoreBackground);
 
             Texture2D atlas = Texture2DUtil.CreateTransparentTexture(Header.Width * frames.Length, Header.Height);
             List<Rect> spriteRects = new List<Rect>();

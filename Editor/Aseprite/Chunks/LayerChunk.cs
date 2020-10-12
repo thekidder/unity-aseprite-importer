@@ -48,6 +48,9 @@ namespace Aseprite.Chunks
         {
             get { return Flags % 2 == 1; }
         }
+        
+        public bool IsBackground => ((Flags & (1 << 3)) > 0);
+
 
         public LayerChunk(uint length, BinaryReader reader) : base(length, ChunkType.Layer)
         {

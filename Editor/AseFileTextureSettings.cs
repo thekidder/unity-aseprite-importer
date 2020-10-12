@@ -30,6 +30,7 @@ namespace AsepriteImporter
         [Range(0, 32)] [SerializeField] public uint extrudeEdges = 1;
         [SerializeField] public Vector2 spritePivot = new Vector2(0.5f, 0.5f);
         [SerializeField] public bool generatePhysics = true;
+        [SerializeField] public bool ignoreBackground = true;
 
         [SerializeField] public TextureWrapMode wrapMode = TextureWrapMode.Clamp;
         [SerializeField] public FilterMode filterMode = FilterMode.Point;

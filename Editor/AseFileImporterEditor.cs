@@ -60,6 +60,8 @@ namespace AsepriteImporter
                 }
 
                 EditorGUILayout.PropertyField(serializedObject.FindProperty(textureSettings + "pixelsPerUnit"));
+                
+                EditorGUILayout.PropertyField(serializedObject.FindProperty(textureSettings + "ignoreBackground"));
 
                 if (importTypeProperty.intValue == (int) AseFileImportType.Sprite)
                 {
