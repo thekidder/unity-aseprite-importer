@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Aseprite.Utils;
-using UnityEditor.Experimental.AssetImporters;
+
 using UnityEngine;
 
 namespace AsepriteImporter
@@ -55,7 +55,7 @@ namespace AsepriteImporter
             return flipped;
         }
 
-        public Texture2D GenerateAtlas(Texture2D[] sprites, out SpriteImportData[] spriteData, TransparencyMode transparencyMode,
+        public Texture2D GenerateAtlas(Texture2D[] sprites, out UnityEditor.AssetImporters.SpriteImportData[] spriteData, TransparencyMode transparencyMode,
             bool baseTwo = true)
         {
             var cols = sprites.Length;
@@ -104,10 +104,10 @@ namespace AsepriteImporter
             return GenerateAtlas(sprites, out spriteData, cols, rows, baseTwo);
         }
 
-        public Texture2D GenerateAtlas(Texture2D[] sprites, out SpriteImportData[] spriteData, int cols, int rows,
+        public Texture2D GenerateAtlas(Texture2D[] sprites, out UnityEditor.AssetImporters.SpriteImportData[] spriteData, int cols, int rows,
             bool baseTwo = true)
         {
-            var spriteImportData = new List<SpriteImportData>();
+            var spriteImportData = new List<UnityEditor.AssetImporters.SpriteImportData>();
 
             var width = cols * spriteSize.x;
             var height = rows * spriteSize.y;
@@ -144,7 +144,7 @@ namespace AsepriteImporter
 
                     atlas.Apply();
 
-                    var importData = new SpriteImportData
+                    var importData = new UnityEditor.AssetImporters.SpriteImportData
                     {
                         rect = spriteRect,
                         pivot = textureSettings.spritePivot,
@@ -168,10 +168,10 @@ namespace AsepriteImporter
         }
 
         // replaces color to transparent
-        public Texture2D GenerateAtlas(Texture2D[] sprites, out SpriteImportData[] spriteData, int cols, int rows,
+        public Texture2D GenerateAtlas(Texture2D[] sprites, out UnityEditor.AssetImporters.SpriteImportData[] spriteData, int cols, int rows,
             Color mask, bool baseTwo = true)
         {
-            var spriteImportData = new List<SpriteImportData>();
+            var spriteImportData = new List<UnityEditor.AssetImporters.SpriteImportData>();
 
             var width = cols * spriteSize.x;
             var height = rows * spriteSize.y;
@@ -201,7 +201,7 @@ namespace AsepriteImporter
                         (int) spriteRect.height, pixelPallete);
                     atlas.Apply();
 
-                    var importData = new SpriteImportData
+                    var importData = new UnityEditor.AssetImporters.SpriteImportData
                     {
                         rect = spriteRect,
                         pivot = textureSettings.spritePivot,
