@@ -303,7 +303,7 @@ namespace Aseprite
                         continue;
 
                     if (!metadatas.ContainsKey(layerIndex))
-                        metadatas[layerIndex] = new MetaData(layer.LayerName);
+                        metadatas[layerIndex] = new MetaData(layer, layerIndex);
                     var metadata = metadatas[layerIndex];
 
                     // Process transform metadata

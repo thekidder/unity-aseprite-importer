@@ -56,7 +56,7 @@ namespace AsepriteImporter
             else
                 frames = aseFile.GetLayersAsFrames();
 
-            SpriteImportData[] spriteImportData = new SpriteImportData[0];
+            SpriteImportData[] spriteImportData;
 
             //if (textureSettings.transparentMask)
             //{
@@ -75,6 +75,29 @@ namespace AsepriteImporter
             atlas.wrapMode = textureSettings.wrapMode;
             atlas.name = "Texture";
 
+            MetaData[] metadatas = aseFile.GetMetaData(textureSettings.spritePivot, textureSettings.pixelsPerUnit);
+            
+            // Find any metadata with a secondary texture
+            foreach (var metadata in metadatas)
+            {
+                if (metadata.Type == MetaDataType.SECONDARY_TEXTURE)
+                {
+                    Debug.Log("Processing metadata layer for secondary texture " + metadata.Args[0]);
+                    
+                    var secondaryTextureFrames = aseFile.GetLayerTexture(metadata.LayerIndex, metadata.Layer);
+                    Texture2D secondaryTexture = atlasBuilder.GenerateAtlas(secondaryTextureFrames.ToArray(), out _,
+                        textureSettings.transparencyMode, false);
+                    
+                    secondaryTexture.alphaIsTransparency = textureSettings.transparencyMode == TransparencyMode.Alpha;;
+                    secondaryTexture.wrapMode = textureSettings.wrapMode;
+                    secondaryTexture.filterMode = textureSettings.filterMode;
+
+                    secondaryTexture.name = "SecondaryTexture_" + metadata.Args[0];
+
+                    ctx.AddObjectToAsset(secondaryTexture.name, secondaryTexture);
+                }
+            }
+
             ctx.AddObjectToAsset("Texture", atlas);
 
             ctx.SetMainObject(atlas);
@@ -83,7 +106,7 @@ namespace AsepriteImporter
             {
                 case AseFileImportType.LayerToSprite:
                 case AseFileImportType.Sprite:
-                    ImportSprites(ctx, aseFile, spriteImportData);
+                    ImportSprites(ctx, aseFile, spriteImportData, metadatas);
                     break;
                 case AseFileImportType.Tileset:
                     ImportTileset(ctx, atlas);
@@ -93,7 +116,7 @@ namespace AsepriteImporter
             ctx.SetMainObject(atlas);
         }
 
-        private void ImportSprites(AssetImportContext ctx, AseFile aseFile, SpriteImportData[] spriteImportData)
+        private void ImportSprites(AssetImportContext ctx, AseFile aseFile, SpriteImportData[] spriteImportData, MetaData[] metadatas)
         {
             int spriteCount = spriteImportData.Length;
 
@@ -112,7 +135,7 @@ namespace AsepriteImporter
                 sprites[i] = sprite;
             }
 
-            GenerateAnimations(ctx, aseFile, sprites);
+            GenerateAnimations(ctx, aseFile, sprites, metadatas);
         }
 
         private void ImportTileset(AssetImportContext ctx, Texture2D atlas)
@@ -180,7 +203,7 @@ namespace AsepriteImporter
             return aseFile;
         }
 
-        private void GenerateAnimations(AssetImportContext ctx, AseFile aseFile, Sprite[] sprites)
+        private void GenerateAnimations(AssetImportContext ctx, AseFile aseFile, Sprite[] sprites, MetaData[] metadatas)
         {
             if (animationSettings == null)
                 animationSettings = new AseFileAnimationSettings[0];
@@ -191,7 +214,6 @@ namespace AsepriteImporter
             if (animations.Length <= 0)
                 return;
 
-            var metadatas = aseFile.GetMetaData(textureSettings.spritePivot, textureSettings.pixelsPerUnit);
 
             if (animationSettings != null)
                 RemoveUnusedAnimationSettings(animSettings, animations);

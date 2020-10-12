@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Aseprite.Chunks;
 using UnityEngine;
 
 namespace Aseprite
@@ -12,12 +13,20 @@ namespace Aseprite
         static public string MetaDataChar = "@";
 
         public MetaDataType Type { get; private set; }
+        
+        public LayerChunk Layer { get; private set; }
+        
+        public int LayerIndex { get; private set; }
+        
         //Average position per frames
         public Dictionary<int, Vector2> Transforms { get; private set; }
         public List<string> Args { get; private set; }
 
-        public MetaData(string layerName)
+        public MetaData(LayerChunk layer, int layerIndex)
         {
+            Layer = layer;
+            LayerIndex = layerIndex;
+            var layerName = layer.LayerName;
             Args = new List<string>();
             Transforms = new Dictionary<int, Vector2>();
             
