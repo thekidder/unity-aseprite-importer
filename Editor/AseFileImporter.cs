@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.IO;
 using Aseprite;
 using UnityEditor;
+using UnityEditor.AssetImporters;
 using Aseprite.Chunks;
 using System.Text;
 
@@ -30,8 +31,8 @@ namespace AsepriteImporter
         UIImage
     }
 
-    [UnityEditor.AssetImporters.ScriptedImporter(1, new []{ "ase", "aseprite" })]
-    public class AseFileImporter : UnityEditor.AssetImporters.ScriptedImporter
+    [ScriptedImporter(1, new []{ "ase", "aseprite" })]
+    public class AseFileImporter : ScriptedImporter
     {
         [SerializeField] public AseFileTextureSettings textureSettings = new AseFileTextureSettings();
         [SerializeField] public AseFileAnimationSettings[] animationSettings;
@@ -40,7 +41,7 @@ namespace AsepriteImporter
         [SerializeField] public AseEditorBindType bindType;
         [SerializeField] public EmptyTileBehaviour emptyTileBehaviour;
 
-        public override void OnImportAsset(UnityEditor.AssetImporters.AssetImportContext ctx)
+        public override void OnImportAsset(AssetImportContext ctx)
         {
             name = GetFileName(ctx.assetPath);
 
@@ -55,7 +56,7 @@ namespace AsepriteImporter
             else
                 frames = aseFile.GetLayersAsFrames();
 
-            UnityEditor.AssetImporters.SpriteImportData[] spriteImportData = new UnityEditor.AssetImporters.SpriteImportData[0];
+            SpriteImportData[] spriteImportData = new SpriteImportData[0];
 
             //if (textureSettings.transparentMask)
             //{
@@ -92,7 +93,7 @@ namespace AsepriteImporter
             ctx.SetMainObject(atlas);
         }
 
-        private void ImportSprites(UnityEditor.AssetImporters.AssetImportContext ctx, AseFile aseFile, UnityEditor.AssetImporters.SpriteImportData[] spriteImportData)
+        private void ImportSprites(AssetImportContext ctx, AseFile aseFile, SpriteImportData[] spriteImportData)
         {
             int spriteCount = spriteImportData.Length;
 
@@ -114,7 +115,7 @@ namespace AsepriteImporter
             GenerateAnimations(ctx, aseFile, sprites);
         }
 
-        private void ImportTileset(UnityEditor.AssetImporters.AssetImportContext ctx, Texture2D atlas)
+        private void ImportTileset(AssetImportContext ctx, Texture2D atlas)
         {
             int cols = atlas.width / textureSettings.tileSize.x;
             int rows = atlas.height / textureSettings.tileSize.y;
@@ -179,7 +180,7 @@ namespace AsepriteImporter
             return aseFile;
         }
 
-        private void GenerateAnimations(UnityEditor.AssetImporters.AssetImportContext ctx, AseFile aseFile, Sprite[] sprites)
+        private void GenerateAnimations(AssetImportContext ctx, AseFile aseFile, Sprite[] sprites)
         {
             if (animationSettings == null)
                 animationSettings = new AseFileAnimationSettings[0];
