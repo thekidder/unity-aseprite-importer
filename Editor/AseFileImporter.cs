@@ -68,7 +68,7 @@ namespace AsepriteImporter
 
             //}
 
-            atlas = atlasBuilder.GenerateAtlas(frames, out spriteImportData, textureSettings.transparencyMode, false);
+            atlas = atlasBuilder.GenerateAtlas(frames, name, out spriteImportData, textureSettings.transparencyMode, false);
 
             atlas.filterMode = textureSettings.filterMode;
             atlas.alphaIsTransparency = textureSettings.transparencyMode == TransparencyMode.Alpha;
@@ -89,7 +89,7 @@ namespace AsepriteImporter
                     Debug.Log("Processing metadata layer for secondary texture " + textureName);
                     
                     var secondaryTextureFrames = aseFile.GetLayerTexture(metadata.LayerIndex, metadata.Layer);
-                    Texture2D secondaryTexture = atlasBuilder.GenerateAtlas(secondaryTextureFrames.ToArray(), out _,
+                    Texture2D secondaryTexture = atlasBuilder.GenerateAtlas(secondaryTextureFrames.ToArray(), name, out _,
                         textureSettings.transparencyMode, false);
                     
                     secondaryTexture.alphaIsTransparency = textureSettings.transparencyMode == TransparencyMode.Alpha;;

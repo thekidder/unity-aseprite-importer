@@ -56,7 +56,7 @@ namespace AsepriteImporter
             return flipped;
         }
 
-        public Texture2D GenerateAtlas(Texture2D[] sprites, out SpriteImportData[] spriteData, TransparencyMode transparencyMode,
+        public Texture2D GenerateAtlas(Texture2D[] sprites, string name, out SpriteImportData[] spriteData, TransparencyMode transparencyMode,
             bool baseTwo = true)
         {
             var cols = sprites.Length;
@@ -102,10 +102,10 @@ namespace AsepriteImporter
                 return GenerateAtlas(sprites, out spriteData, cols, rows, textureSettings.transparentColor, baseTwo);
             }
 
-            return GenerateAtlas(sprites, out spriteData, cols, rows, baseTwo);
+            return GenerateAtlas(sprites, name, out spriteData, cols, rows, baseTwo);
         }
 
-        public Texture2D GenerateAtlas(Texture2D[] sprites, out SpriteImportData[] spriteData, int cols, int rows,
+        public Texture2D GenerateAtlas(Texture2D[] sprites, string name, out SpriteImportData[] spriteData, int cols, int rows,
             bool baseTwo = true)
         {
             var spriteImportData = new List<SpriteImportData>();
@@ -150,7 +150,7 @@ namespace AsepriteImporter
                         rect = spriteRect,
                         pivot = textureSettings.spritePivot,
                         border = Vector4.zero,
-                        name = index.ToString(),
+                        name = name + "_" + index.ToString(),
                         spriteID = index.ToString()
                     };
 
