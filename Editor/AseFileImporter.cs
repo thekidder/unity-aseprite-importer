@@ -86,8 +86,6 @@ namespace AsepriteImporter
                 {
                     var textureName = metadata.Args[0];
                     
-                    Debug.Log("Processing metadata layer for secondary texture " + textureName);
-                    
                     var secondaryTextureFrames = aseFile.GetLayerTexture(metadata.LayerIndex, metadata.Layer);
                     Texture2D secondaryTexture = atlasBuilder.GenerateAtlas(secondaryTextureFrames.ToArray(), name, out _,
                         textureSettings.transparencyMode, false);
