@@ -447,7 +447,7 @@ namespace AsepriteImporter
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("Animation Type:\t{0}", animation.Animation.ToString());
-            sb.AppendLine();
+            sb.Append("\n");
             sb.AppendFormat("Animation:\tFrom: {0}; To: {1}", animation.FrameFrom, animation.FrameTo);
 
             return sb.ToString();
