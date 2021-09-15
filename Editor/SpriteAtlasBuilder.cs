@@ -148,6 +148,7 @@ namespace AsepriteImporter
                     var importData = new SpriteImportData
                     {
                         rect = spriteRect,
+                        alignment = SpriteAlignment.Custom,
                         pivot = textureSettings.spritePivot,
                         border = Vector4.zero,
                         name = name + "_" + index.ToString(),
