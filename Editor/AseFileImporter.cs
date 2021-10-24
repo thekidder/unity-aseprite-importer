@@ -101,7 +101,12 @@ namespace AsepriteImporter
             
             TextureGenerationSettings generationSettings = new TextureGenerationSettings();
             
-            generationSettings.platformSettings = new TextureImporterPlatformSettings();
+            generationSettings.platformSettings = new TextureImporterPlatformSettings()
+            {
+                format = TextureImporterFormat.RGBA32,
+                textureCompression = TextureImporterCompression.Uncompressed,
+            };
+
 
             generationSettings.spriteImportData = spriteImportData;
             generationSettings.secondarySpriteTextures = secondarySpriteTextures.ToArray();
