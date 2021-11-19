@@ -89,7 +89,7 @@ namespace Aseprite.Utils
         }
 
 
-        public static Texture2D Normal(Texture2D baseLayer, Texture2D layer)
+        public static Texture2D Normal(Texture2D baseLayer, Texture2D layer, float opacity)
         {
             Texture2D newLayer = new Texture2D(baseLayer.width, baseLayer.height);
 
@@ -99,7 +99,7 @@ namespace Aseprite.Utils
                 {
                     Color a = baseLayer.GetPixel(x, y);
                     Color b = layer.GetPixel(x, y);
-
+                    b.a *= opacity;
                     
                     Color c = new Color();
 
