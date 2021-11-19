@@ -121,7 +121,6 @@ namespace Aseprite
 
         public List<Texture2D> GetLayerTexture(int layerIndex, LayerChunk layer)
         {
-
             List<LayerChunk> layers = GetChunks<LayerChunk>();
             List<Texture2D> textures = new List<Texture2D>();
 
@@ -153,7 +152,9 @@ namespace Aseprite
                     if (layer.LayerType == LayerType.Group)
                         continue;
 
-                    textures.Add(GetTextureFromCel(cels[i]));
+                    var texture = GetTextureFromCel(cels[i]);
+                    texture = Texture2DBlender.ApplyLayerOpacity(texture, opacity);
+                    textures.Add(texture);
                 }
             }
 

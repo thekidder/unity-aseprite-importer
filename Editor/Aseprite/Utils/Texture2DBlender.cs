@@ -88,6 +88,26 @@ namespace Aseprite.Utils
             return b + s - 2 * b * s;
         }
 
+        public static Texture2D ApplyLayerOpacity(Texture2D layer, float opacity)
+        {
+            Texture2D newLayer = new Texture2D(layer.width, layer.height);
+
+            for (int x = 0; x < layer.width; x++)
+            {
+                for (int y = 0; y < layer.height; y++)
+                {
+                    Color c = layer.GetPixel(x, y);
+                    c.a *= opacity;
+
+                    newLayer.SetPixel(x, y, c);
+                }
+            }
+
+            newLayer.Apply();
+
+            return newLayer;
+        }
+
 
         public static Texture2D Normal(Texture2D baseLayer, Texture2D layer, float opacity)
         {
