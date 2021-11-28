@@ -70,6 +70,14 @@ namespace AsepriteImporter
 
             atlas = atlasBuilder.GenerateAtlas(frames, name, out spriteImportData, textureSettings.transparencyMode, false);
 
+            if (importType == AseFileImportType.Tileset) {
+                var tileImportData = generateTiles(ctx, atlas);
+                SpriteImportData[] final = new SpriteImportData[spriteImportData.Length + tileImportData.Length];
+                spriteImportData.CopyTo(final, 0);
+                tileImportData.CopyTo(final, spriteImportData.Length);
+                spriteImportData = final;
+            }
+
             atlas.filterMode = textureSettings.filterMode;
             atlas.alphaIsTransparency = textureSettings.transparencyMode == TransparencyMode.Alpha;
             atlas.wrapMode = textureSettings.wrapMode;
@@ -170,7 +178,7 @@ namespace AsepriteImporter
                     // ImportSprites(ctx, aseFile, spriteImportData, metadatas);
                     break;
                 case AseFileImportType.Tileset:
-                    ImportTileset(ctx, atlas);
+                    // ImportTileset(ctx, atlas);
                     break;
             }
         }
@@ -197,7 +205,7 @@ namespace AsepriteImporter
             GenerateAnimations(ctx, aseFile, sprites, metadatas);
         }
 
-        private void ImportTileset(AssetImportContext ctx, Texture2D atlas)
+        private SpriteImportData[] generateTiles(AssetImportContext ctx, Texture2D atlas)
         {
             int cols = atlas.width / textureSettings.tileSize.x;
             int rows = atlas.height / textureSettings.tileSize.y;
@@ -206,6 +214,8 @@ namespace AsepriteImporter
             int height = textureSettings.tileSize.y;
 
             int index = 0;
+
+            List<SpriteImportData> spriteParams = new List<SpriteImportData>();
 
             for (int y = rows - 1; y >= 0; y--)
             {
@@ -222,16 +232,22 @@ namespace AsepriteImporter
                         }
                     }
 
-                    Sprite sprite = Sprite.Create(atlas, tileRect, textureSettings.spritePivot,
-                        textureSettings.pixelsPerUnit, textureSettings.extrudeEdges, textureSettings.meshType,
-                        Vector4.zero, textureSettings.generatePhysics);
-                    sprite.name = string.Format("{0}_{1}", name, index);
+                    var sprite = new SpriteImportData();
 
-                    ctx.AddObjectToAsset(sprite.name, sprite);
+                    sprite = new SpriteImportData();
+                    sprite.name = string.Format("{0}_tile_{1}", name, index);
+                    sprite.rect = tileRect;
+                    sprite.pivot = textureSettings.spritePivot;
+
+                    Debug.Log("import name: " + sprite.name);
+
+                    spriteParams.Add(sprite);
 
                     index++;
                 }
             }
+
+            return spriteParams.ToArray();
         }
 
         private bool IsTileEmpty(Rect tileRect, Texture2D atlas)
